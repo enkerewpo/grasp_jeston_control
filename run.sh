@@ -71,8 +71,19 @@ docker run -it --rm \
   -e TS_USERSPACE=0 \
   -e TS_STATE_DIR=/var/lib/tailscale \
   -e TS_HOSTNAME=docker1 \
+  -e DISPLAY=${DISPLAY:-:0} \
+  -e QT_X11_NO_MITSHM=1 \
+  -e XDG_RUNTIME_DIR=/tmp/runtime-root \
   $IMAGE_NAME \
   bash -c '
+    mkdir -p /tmp/runtime-root
+    chmod 700 /tmp/runtime-root
+    export XDG_RUNTIME_DIR=/tmp/runtime-root
+    
+    # Set up OSMesa for headless OpenGL rendering
+    export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/osmesa:${LD_LIBRARY_PATH}
+    export OSMESA_LIB=/usr/lib/x86_64-linux-gnu/libOSMesa.so
+    
     echo "[*] Starting tailscaled..."
     # Kill any existing tailscaled process in container
     killall tailscaled 2>/dev/null || true

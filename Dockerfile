@@ -18,7 +18,11 @@ RUN apt update && apt install -y \
     libsm6 \
     libxext6 \
     libxrender-dev \
-    bzip2
+    bzip2 \
+    libosmesa6 \
+    libglu1-mesa \
+    libglfw3 \
+    libglfw3-dev
 
 RUN apt update && apt install -y curl && \
 curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null && \
