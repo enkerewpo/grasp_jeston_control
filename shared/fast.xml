@@ -21,7 +21,7 @@
                     </locator>
                     <locator>
                         <udpv4>
-                            <address>100.117.99.116</address> 
+                            <address>100.77.168.57</address> 
                         </udpv4>
                     </locator>
                 </initialPeersList>
