@@ -1,90 +1,99 @@
-# Grasp Jetson Control
+GRASP JETSON CONTROL
+===================
 
-wheatfox
+Author: wheatfox
 
-For using ROS2 Humble docker with tailscale for communication between tailscale ROS2 nodes and grasping with GraspNet.
+DESCRIPTION
+-----------
+Docker-based ROS2 Humble environment with Tailscale integration for 
+secure communication between ROS2 nodes and GraspNet grasping.
 
-## Setup Instructions
 
-### 1. Configure Tailscale
-- Copy `.env.template` to `.env` and add your Tailscale auth key:
-  ```bash
-  cp .env.template .env
-  # Add your TS_AUTHKEY to .env file
-  ```
+SETUP
+-----
 
-### 2. Build and Run Docker Container
-```bash
-# Build the image (first time or after changes)
-./run.sh -b
+1. Configure Tailscale
 
-# Run the container (connects to Tailscale automatically)
-source .env  # Load TS_AUTHKEY
-./run.sh
+   Copy the template environment file and add your Tailscale auth key:
 
-# The container will automatically:
-# - Connect to Tailscale network
-# - Mount source code in /root/src
-# - Enable GPU support if available
-```
+     cp .env.template .env
+     # Edit .env and add your TS_AUTHKEY
 
-### 3. Install GraspNet Components
-Once inside the container, run the installation script:
-```bash
-cd /root/src
-./install_graspnet.sh
-```
+2. Build and Run Docker Container
 
-This follows the [official GraspNet installation steps](https://github.com/graspnet/graspnet-baseline):
-1. `pip install -r requirements.txt` (from graspnet-baseline)
-2. `pip install .` (graspnetAPI)
-3. `python setup.py install` (pointnet2)
-4. `python setup.py install` (knn)
+   Build the image:
+     ./run.sh -b
 
-**Note**: First-time compilation may take several minutes.
+   Run the container (connects to Tailscale automatically):
+     source .env
+     ./run.sh
 
-### 4. Verify Installation
-```bash
-python3 -c "from graspnetAPI.grasp import GraspGroup; print('✓ GraspNet API')"
-python3 -c "import pointnet2; print('✓ pointnet2')"  
-python3 -c "import knn; print('✓ knn')"
-```
+   The container will automatically:
+     - Connect to Tailscale network
+     - Mount source code in /root/src
+     - Enable GPU support if available
 
-### 5. Run Demo (Optional)
-```bash
-cd /root/src/graspnet-baseline
-python3 demo.py --checkpoint_path <path_to_model> --camera realsense
-```
+3. Install GraspNet Components
 
-### 6. Use GraspNet with ROS2
+   Once inside the container, run the installation script:
+     cd /root/src
+     ./install_graspnet.sh
 
-**GPU Support:**
-- The container automatically detects GPU and installs CUDA-enabled PyTorch
-- GPU detection happens via `nvidia-smi` command
-- The installation script (`install_graspnet.sh`) will install the appropriate PyTorch version
-- To verify GPU support:
-  ```bash
-  python3 -c "import torch; print('CUDA:', torch.cuda.is_available())"
-  nvidia-smi  # List available GPUs
-  ```
+   This follows the official GraspNet installation steps:
+     https://github.com/graspnet/graspnet-baseline
 
-The container includes:
+   Installation steps:
+     1. pip install -r requirements.txt (from graspnet-baseline)
+     2. pip install . (graspnetAPI)
+     3. python setup.py install (pointnet2)
+     4. python setup.py install (knn)
+
+   NOTE: First-time compilation may take several minutes.
+
+4. Verify Installation
+
+     python3 -c "from graspnetAPI.grasp import GraspGroup; print('OK: GraspNet API')"
+     python3 -c "import pointnet2; print('OK: pointnet2')"  
+     python3 -c "import knn; print('OK: knn')"
+
+5. Run Demo (Optional)
+
+     cd /root/src/graspnet-baseline
+     python3 demo.py --checkpoint_path <path_to_model> --camera realsense
+
+6. Use GraspNet with ROS2
+
+   GPU Support:
+   - The container automatically detects GPU and installs CUDA-enabled PyTorch
+   - GPU detection happens via nvidia-smi command
+   - The installation script (install_graspnet.sh) will install the appropriate
+     PyTorch version
+
+   To verify GPU support:
+     python3 -c "import torch; print('CUDA:', torch.cuda.is_available())"
+     nvidia-smi  # List available GPUs
+
+
+CONTAINER INCLUDES
+------------------
 - ROS2 Humble with fastRTPS
 - PyTorch (CUDA-enabled if GPU available, otherwise CPU)
 - GraspNet API and baseline code
 - All required dependencies
-- Source code mounted in `/root/src/`
-- Example code in `/root/src/graspnet-baseline/`
+- Source code mounted in /root/src/
+- Example code in /root/src/graspnet-baseline/
 
-## IP Addresses
 
-- Jetson IP: 10.7.61.73
-- Jetson Tailscale IP: 100.84.5.76(old) 100.87.172.93(new)
-- Debian IP: 100.117.99.116
-- Debian Docker IP: 100.77.168.57
+IP ADDRESSES
+------------
+Jetson IP:              10.7.61.73
+Jetson Tailscale IP:    100.84.5.76 (old) 100.87.172.93 (new)
+Debian IP:              100.117.99.116
+Debian Docker IP:       100.77.168.57
 
-## Features
 
+FEATURES
+--------
 - ROS2 Humble with fastRTPS
 - Tailscale integration for secure ROS2 communication
 - GraspNet API for grasp pose detection

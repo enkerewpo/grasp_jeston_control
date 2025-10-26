@@ -16,12 +16,12 @@
                 <initialPeersList>
                     <locator>
                         <udpv4>
-                            <address>100.87.172.93</address>
+                            <address>100.87.172.93</address> <!-- Jetson Tailscale IP -->
                         </udpv4>
                     </locator>
                     <locator>
                         <udpv4>
-                            <address>100.77.168.57</address> 
+                            <address>100.99.31.104</address> <!-- Debian Docker IP -->
                         </udpv4>
                     </locator>
                 </initialPeersList>
