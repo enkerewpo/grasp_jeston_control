@@ -1,0 +1,6 @@
+[submodule "src/graspnet-baseline"]
+	path = src/graspnet-baseline
+	url = https://github.com/enkerewpo/graspnet-baseline
+[submodule "src/graspnetAPI"]
+	path = src/graspnetAPI
+	url = https://github.com/enkerewpo/graspnetAPI
