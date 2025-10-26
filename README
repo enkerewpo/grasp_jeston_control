@@ -1,0 +1,5 @@
+Jeston IP: 10.7.61.73
+Jeston Tailscale IP: 100.84.5.76(old) 100.87.172.93(new)
+Debian IP: 100.117.99.116
+
+docker build -t ros2-humble-ts .
