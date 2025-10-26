@@ -33,6 +33,19 @@ SETUP
      - Mount source code in /root/src
      - Enable GPU support if available
 
+   Container Management:
+     To detach from the container without stopping it:
+       Press Ctrl+P then Ctrl+Q
+
+     To reattach to a running container:
+       ./run.sh
+
+     To stop the container:
+       Press Ctrl+C or type 'exit' inside the container
+
+     To check container status:
+       docker ps -a | grep grasp
+
 3. Install GraspNet Components
 
    Once inside the container, run the installation script:
@@ -49,6 +62,10 @@ SETUP
      4. python setup.py install (knn)
 
    NOTE: First-time compilation may take several minutes.
+   
+   If you encounter sympy installation errors, the script will automatically
+   handle distutils-installed packages by removing old sympy files and
+   reinstalling.
 
 4. Verify Installation
 

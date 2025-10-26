@@ -140,5 +140,8 @@ docker run -it --rm \
     }
     
     echo "[*] Tailscale connected."
+    echo "[*] Activating conda environment..."
+    source /opt/miniconda3/bin/activate graspnet
+    echo "[*] Conda environment activated: graspnet"
     exec bash
   '
