@@ -31,44 +31,36 @@ apt update && \
 apt install -y tailscale && \
 pip3 install --upgrade pip
 
-# Install CUDA toolkit for compiling CUDA extensions (pointnet2, knn)
 RUN apt-get update && apt-get install -y \
     wget gnupg && \
     wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
     apt-get update && \
-    apt-get install -y cuda-toolkit-12-0 && \
+    apt-get install -y cuda-toolkit-12-4 && \
     rm cuda-keyring_1.1-1_all.deb
 
-# Install Miniconda
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
     bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda3 && \
     rm Miniconda3-latest-Linux-x86_64.sh
 
-# Add conda to PATH
 ENV PATH=/opt/miniconda3/bin:$PATH
 
-# Accept conda Terms of Service and create environment
 RUN conda tos accept || true && \
     conda create -n graspnet python=3.10 -y && \
     conda clean -ya
 
-# Set up conda environment activation in bashrc
 RUN echo "source /opt/miniconda3/bin/activate graspnet" >> ~/.bashrc
 
-# Configure conda to be more stable for large downloads
 RUN conda config --set solver classic && \
     conda config --set channel_priority flexible
 
-# Install PyTorch and dependencies (will install at runtime via install_graspnet.sh instead)
-# This avoids large downloads during Docker build
-# The conda environment will have PyTorch installed when you run the container
-
-# Note: GraspNet dependencies will be installed via install_graspnet.sh after container starts
-
-# Set CUDA environment
-ENV CUDA_HOME=/usr/local/cuda-12
-ENV PATH=$CUDA_HOME/bin:$PATH
-ENV LD_LIBRARY_PATH=/usr/local/cuda-12/lib64
+# CUDA 12.4 toolkit installs to /usr/local/cuda by default
+# Also set up version-specific paths for compatibility
+ENV CUDA_HOME=/usr/local/cuda
+ENV CUDA_PATH=/usr/local/cuda
+ENV PATH=/usr/local/cuda/bin:$PATH
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/compat:$LD_LIBRARY_PATH
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
 
 WORKDIR /root/workspace
