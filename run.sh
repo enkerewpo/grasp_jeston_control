@@ -58,7 +58,7 @@ docker run -it --rm \
   $GPU_ARGS \
   -v ./shared:/root/shared \
   -v ./src:/root/src \
-  -v ./lib:/var/lib \
+  -v ./tailscale:/var/lib/tailscale \
   -v /dev/net/tun:/dev/net/tun \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v "$XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR" \

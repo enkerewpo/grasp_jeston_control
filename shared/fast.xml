@@ -11,7 +11,7 @@
             <userTransports>
                 <transport_id>TailscaleTransport</transport_id>
             </userTransports>
-            <useBuiltinTransports>true</useBuiltinTransports>
+            <useBuiltinTransports>false</useBuiltinTransports>
             <builtin>
                 <initialPeersList>
                     <locator>
@@ -21,7 +21,7 @@
                     </locator>
                     <locator>
                         <udpv4>
-                            <address>100.66.112.77</address> <!-- Debian Docker IP -->
+                            <address>100.75.220.104</address> <!-- Debian Docker IP -->
                         </udpv4>
                     </locator>
                 </initialPeersList>
