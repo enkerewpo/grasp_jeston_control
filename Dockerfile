@@ -22,7 +22,8 @@ RUN apt update && apt install -y \
     libosmesa6 \
     libglu1-mesa \
     libglfw3 \
-    libglfw3-dev
+    libglfw3-dev \
+    mesa-utils
 
 RUN apt update && apt install -y curl && \
 curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null && \

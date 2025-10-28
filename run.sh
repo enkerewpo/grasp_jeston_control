@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# Load environment variables from .env if it exists
 if [ -f .env ]; then
     echo "[*] Loading environment variables from .env..."
     export $(cat .env | grep -v '^#' | xargs)
@@ -10,32 +9,27 @@ fi
 IMAGE_NAME=tailscale_ros
 CONTAINER_NAME=tailscale_ros_dev
 
-# if args have -b, build the image
 if [ "$1" == "-b" ]; then
     echo "[*] Building Docker image..."
     docker build -t $IMAGE_NAME .
 fi
 
-# if the image does not exist, build it
 if ! docker image inspect $IMAGE_NAME >/dev/null 2>&1; then
     echo "[*] Building Docker image..."
     docker build -t $IMAGE_NAME .
 fi
 
-# if args have -d, delete the container
 if [ "$1" == "-d" ]; then
     echo "[*] Deleting Docker container..."
     docker rm -f $CONTAINER_NAME
 fi
 
-# if args have -c, clear state (requires manual sudo)
 if [ "$1" == "-c" ]; then
     echo "[*] To clear Tailscale state, run: sudo rm -rf ./lib/tailscale"
     echo "[*] Then run ./run.sh again"
     exit 0
 fi
 
-# Check if GPU is available and set docker args accordingly
 GPU_ARGS=""
 if command -v nvidia-smi &> /dev/null; then
     echo "[*] GPU detected, enabling GPU support..."
@@ -64,7 +58,7 @@ docker run -it --rm \
   $GPU_ARGS \
   -v ./shared:/root/shared \
   -v ./src:/root/src \
-  -v ./tailscale_state:/tailscale \
+  -v ./lib:/var/lib \
   -v /dev/net/tun:/dev/net/tun \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v "$XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR" \
@@ -72,7 +66,7 @@ docker run -it --rm \
   -e TS_AUTHKEY="${DOCKERKEY_PERM}" \
   -e TS_ROUTES="10.0.0.0/8" \
   -e TS_USERSPACE=0 \
-  -e TS_STATE_DIR=/tailscale \
+  -e TS_STATE_DIR=/var/lib/tailscale \
   -e TS_HOSTNAME=docker1 \
   -e DISPLAY=${DISPLAY:-:0} \
   -e QT_X11_NO_MITSHM=1 \

@@ -21,7 +21,7 @@
                     </locator>
                     <locator>
                         <udpv4>
-                            <address>100.99.31.104</address> <!-- Debian Docker IP -->
+                            <address>100.66.112.77</address> <!-- Debian Docker IP -->
                         </udpv4>
                     </locator>
                 </initialPeersList>
