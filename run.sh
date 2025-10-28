@@ -39,7 +39,7 @@ fi
 GPU_ARGS=""
 if command -v nvidia-smi &> /dev/null; then
     echo "[*] GPU detected, enabling GPU support..."
-    GPU_ARGS="--gpus all"
+    GPU_ARGS="--gpus all --runtime nvidia"
 fi
 
 # Check if user wants to use host network
@@ -62,17 +62,23 @@ docker run -it --rm \
   --cap-add SYS_MODULE \
   $NETWORK_ARGS \
   $GPU_ARGS \
-  -v ./lib:/var/lib \
   -v ./shared:/root/shared \
   -v ./src:/root/src \
+  -v ./tailscale_state:/tailscale \
   -v /dev/net/tun:/dev/net/tun \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v "$XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR" \
+  -v "/dev/dri:/dev/dri" \
   -e TS_AUTHKEY="${DOCKERKEY_PERM}" \
   -e TS_ROUTES="10.0.0.0/8" \
   -e TS_USERSPACE=0 \
-  -e TS_STATE_DIR=/var/lib/tailscale \
+  -e TS_STATE_DIR=/tailscale \
   -e TS_HOSTNAME=docker1 \
   -e DISPLAY=${DISPLAY:-:0} \
   -e QT_X11_NO_MITSHM=1 \
+  -e QT_QPA_PLATFORM=xcb \
+  -e NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all} \
+  -e NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-all} \
   -e XDG_RUNTIME_DIR=/tmp/runtime-root \
   $IMAGE_NAME \
   bash -c '
