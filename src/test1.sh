@@ -1,10 +1,6 @@
 #!/bin/bash
 cd graspnet-baseline
 
-# to fix the error, manually do this once for conda environment to use system libstdc++.so.6
-# mv /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6 /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6.bak
-# ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6
-
 # export OPEN3D_HEADLESS=1
 
 export LD_LIBRARY_PATH=/opt/ros/humble/lib:$LD_LIBRARY_PATH

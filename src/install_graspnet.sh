@@ -5,7 +5,7 @@
 set -e
 
 # Activate conda environment
-source /opt/miniconda3/bin/activate graspnet
+source /opt/miniconda3/bin/activate env1
 
 cd /root/src/graspnet-baseline
 

@@ -1,10 +1,24 @@
 #!/bin/bash
 cd graspnet-baseline
 
-# to fix the error, manually do this once for conda environment to use system libstdc++.so.6
-# mv /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6 /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6.bak
+# pip install lark empy
 
-# ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6 (optional)
+# Kill any existing demo_ros2 processes before starting
+echo "[*] Checking for existing demo_ros2 processes..."
+DEMO_ROS2_PIDS=$(ps aux | grep -E "[d]emo_ros2\.py" | awk '{print $2}')
+if [ -n "$DEMO_ROS2_PIDS" ]; then
+    echo "[*] Found existing demo_ros2 processes, killing them..."
+    echo "$DEMO_ROS2_PIDS" | xargs -r kill -9 2>/dev/null
+    sleep 1
+    echo "[*] Cleaned up existing processes"
+else
+    echo "[*] No existing demo_ros2 processes found"
+fi
+
+# to fix the error, manually do this once for conda environment to use system libstdc++.so.6
+# mv /opt/miniconda3/envs/env1/lib/libstdc++.so.6 /opt/miniconda3/envs/env1/lib/libstdc++.so.6.bak
+
+# ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /opt/miniconda3/envs/env1/lib/libstdc++.so.6 (optional)
 
 # export OPEN3D_HEADLESS=1
 
@@ -36,6 +50,12 @@ if [ -d "$HOME/ros2_ws/install" ]; then
         fi
     done
 fi
+
+
+echo "[*] Building graspnet_msgs package..."
+cd .
+source /opt/ros/humble/setup.bash
+source /root/src/install/setup.sh
 
 # Create output directory if it doesn't exist
 OUTPUT_DIR="../output/visualization"
@@ -78,15 +98,6 @@ except Exception as e:
     rclpy.shutdown()
 EOF
 
-echo ""
-echo "[*] Running GraspNet ROS2 demo..."
-echo "[*] Make sure ROS2 topics are publishing: /camera/color/image_raw, /camera/depth/image_raw, /camera/color/camera_info"
-echo ""
-echo "[*] If stuck, press Ctrl+C to interrupt"
-echo "[*] The program will timeout after 30 seconds if no data received"
-echo ""
-
-
 # export OPEN3D_HEADLESS=1
 
 # Run with timeout
@@ -94,7 +105,6 @@ echo ""
 CUDA_VISIBLE_DEVICES=0 \
     timeout 60 python -W ignore demo_ros2.py \
     --checkpoint_path ../weights/checkpoint-kn.tar \
-    --process_once \
     --no_collision
 
 echo ""

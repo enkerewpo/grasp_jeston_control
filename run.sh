@@ -7,7 +7,7 @@ if [ -f .env ]; then
 fi
 
 IMAGE_NAME=tailscale_ros
-CONTAINER_NAME=tailscale_ros_dev
+CONTAINER_NAME=tailscale_ros_dev_grasp
 
 if [ "$1" == "-b" ]; then
     echo "[*] Building Docker image..."
@@ -164,7 +164,7 @@ docker run -it --rm \
     
     echo "[*] Tailscale connected, this machine IP is: $(hostname -I)"
     echo "[*] Activating conda environment..."
-    source /opt/miniconda3/bin/activate graspnet
-    echo "[*] Conda environment activated: graspnet"
+    source /opt/miniconda3/bin/activate env1
+    echo "[*] Conda environment activated: env1"
     exec bash
   '
