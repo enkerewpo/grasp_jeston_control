@@ -35,7 +35,8 @@ RUN apt update && apt install -y \
     libglu1-mesa \
     libglfw3 \
     libglfw3-dev \
-    mesa-utils
+    mesa-utils \
+    libclang-dev python3-vcstool
 
 RUN apt update && apt install -y curl && \
 curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null && \
@@ -47,17 +48,20 @@ pip3 install --upgrade pip
 ENV PATH=/opt/miniconda3/bin:$PATH
 
 RUN conda tos accept || true && \
-    conda create -n graspnet python=3.10 -y && \
+    conda create -n env1 python=3.10 -y && \
     conda clean -ya
 
-RUN echo "source /opt/miniconda3/bin/activate graspnet" >> ~/.bashrc
+RUN echo "source /opt/miniconda3/bin/activate env1" >> ~/.bashrc
 
 RUN conda config --set solver classic && \
     conda config --set channel_priority flexible
 
-# install some basic packages in the graspnet conda env
-RUN conda run -n graspnet pip install intel-openmp && \
-    conda run -n graspnet pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+# install some basic packages in the env1 conda env
+RUN conda run -n env1 pip install intel-openmp && \
+    conda run -n env1 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+
+RUN conda run -n env1 pip install git+https://github.com/colcon/colcon-cargo.git && \
+    conda run -n env1 pip install git+https://github.com/colcon/colcon-ros-cargo.git
 
 # CUDA 12.4 toolkit installs to /usr/local/cuda by default
 # Also set up version-specific paths for compatibility
