@@ -12,19 +12,14 @@ cd /root/src/graspnet-baseline
 echo "[*] Checking environment..."
 echo "Python version: $(python --version)"
 
-echo "[*] Installing Intel libraries (fixes iJIT_NotifyEvent error)..."
-pip install intel-openmp
+# echo "[*] Installing Intel libraries (fixes iJIT_NotifyEvent error)..."
+# pip install intel-openmp
 
-echo "[*] Installing PyTorch with CUDA 12.4 (matching system CUDA version)..."
+# echo "[*] Installing PyTorch with CUDA 12.4 (matching system CUDA version)..."
 # Uninstall existing PyTorch first
-conda uninstall -y pytorch torchvision torchaudio --force-remove || true
+# conda uninstall -y pytorch torchvision torchaudio --force-remove || true
 # Install CUDA 12.4 PyTorch (compatible with system CUDA 12.4)
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
-
-echo "[*] Verifying PyTorch installation..."
-echo "PyTorch version: $(python -c 'import torch; print(torch.__version__)')"
-echo "CUDA available: $(python -c 'import torch; print(torch.cuda.is_available())')"
-echo "CUDA version: $(python -c 'import torch; print(torch.version.cuda)')"
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 
 echo "[*] Installing graspnet-baseline requirements..."
 pip install -r requirements.txt
@@ -53,11 +48,21 @@ python setup.py install
 echo "[*] Cleaning conda cache..."
 conda clean -ya
 
+echo "[*] Verifying PyTorch installation..."
+echo "PyTorch version: $(python -c 'import torch; print(torch.__version__)')"
+echo "CUDA available: $(python -c 'import torch; print(torch.cuda.is_available())')"
+echo "CUDA version: $(python -c 'import torch; print(torch.version.cuda)')"
+echo "pointnet2: $(python -c 'import pointnet2' && echo 'pointnet2 OK')"
+echo "knn: $(python -c 'import knn_pytorch' && echo 'knn OK')"
+
+# for ROS2 libc compatability:
+if [ -f "/opt/miniconda3/envs/graspnet/lib/libstdc++.so.6" ] then
+    mv /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6 /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6.bak
+    echo "[*] Moved libstdc++.so.6 to libstdc++.so.6.bak"
+else
+    echo "[*] libstdc++.so.6 not found in conda environment, which is good"
+fi
+
 echo ""
 echo "✓ Installation complete!"
 echo ""
-echo "Testing installations..."
-echo "Test GPU: python -c 'import torch; print(f\"CUDA available: {torch.cuda.is_available()}\")'"
-echo "Test pointnet2: python -c 'import pointnet2' && echo 'pointnet2 OK'"
-echo "Test knn: python -c 'import knn_pytorch' && echo 'knn OK'"
-
