@@ -48,6 +48,18 @@ if pgrep tailscaled > /dev/null; then
     sleep 2
 fi
 
+# Set up X11 forwarding permissions
+echo "[*] Setting up X11 forwarding..."
+if [ -z "$DISPLAY" ]; then
+    export DISPLAY=:0
+fi
+if [ -z "$XAUTHORITY" ]; then
+    export XAUTHORITY=$HOME/.Xauthority
+fi
+echo "[*] DISPLAY=$DISPLAY"
+echo "[*] XAUTHORITY=$XAUTHORITY"
+xhost +local:docker 2>/dev/null || xhost + 2>/dev/null || echo "[*] Warning: Could not set xhost permissions"
+
 docker run -it --rm \
   --name $CONTAINER_NAME \
   --hostname docker-ub \
@@ -62,7 +74,7 @@ docker run -it --rm \
   -v /dev/net/tun:/dev/net/tun \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -v "$XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR" \
-  -v "/dev/dri:/dev/dri" \
+  -v /dev/dri:/dev/dri \
   -e TS_AUTHKEY="${DOCKERKEY_PERM}" \
   -e TS_ROUTES="10.0.0.0/8" \
   -e TS_USERSPACE=0 \
@@ -70,7 +82,7 @@ docker run -it --rm \
   -e TS_HOSTNAME=docker1 \
   -e DISPLAY=${DISPLAY:-:0} \
   -e QT_X11_NO_MITSHM=1 \
-  -e QT_QPA_PLATFORM=xcb \
+  -e XAUTHORITY=${XAUTHORITY} \
   -e NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all} \
   -e NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-all} \
   -e XDG_RUNTIME_DIR=/tmp/runtime-root \
@@ -150,7 +162,7 @@ docker run -it --rm \
       exit 1
     }
     
-    echo "[*] Tailscale connected."
+    echo "[*] Tailscale connected, this machine IP is: $(hostname -I)"
     echo "[*] Activating conda environment..."
     source /opt/miniconda3/bin/activate graspnet
     echo "[*] Conda environment activated: graspnet"

@@ -56,7 +56,7 @@ echo "pointnet2: $(python -c 'import pointnet2' && echo 'pointnet2 OK')"
 echo "knn: $(python -c 'import knn_pytorch' && echo 'knn OK')"
 
 # for ROS2 libc compatability:
-if [ -f "/opt/miniconda3/envs/graspnet/lib/libstdc++.so.6" ] then
+if [ -f "/opt/miniconda3/envs/graspnet/lib/libstdc++.so.6" ]; then
     mv /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6 /opt/miniconda3/envs/graspnet/lib/libstdc++.so.6.bak
     echo "[*] Moved libstdc++.so.6 to libstdc++.so.6.bak"
 else
