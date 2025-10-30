@@ -49,6 +49,7 @@ mv /opt/miniconda3/envs/env1/lib/libstdc++.so.6 /opt/miniconda3/envs/env1/lib/li
 # then build some ROS2 packages
 
 colcon build # under src
+source ./install/setup.sh
 
 ./test1.sh # to run the official ROS1 demo
 ./test2.sh # to run the actual graspnet that use Jeston's camera topic input
