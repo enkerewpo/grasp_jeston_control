@@ -11,7 +11,7 @@ git clone --recursive https://github.com/enkerewpo/grasp_jeston_control
 cd grasp_jeston_control
 ```
 
-2. create a .env file in the root directory with the following variables:
+2. create a .env file in the project root directory with the following variables:
 
 ```ini
 DOCKERKEY_PERM=tskey-auth-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
