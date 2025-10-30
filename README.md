@@ -46,6 +46,10 @@ cd ~/src
 ./install_graspnet.sh
 mv /opt/miniconda3/envs/env1/lib/libstdc++.so.6 /opt/miniconda3/envs/env1/lib/libstdc++.so.6.bak # to fix ROS2 under conda
 
+# then build some ROS2 packages
+
+colcon build # under src
+
 ./test1.sh # to run the official ROS1 demo
 ./test2.sh # to run the actual graspnet that use Jeston's camera topic input
 ```
