@@ -1,4 +1,10 @@
 #!/bin/bash
+
+# run colcon build in this directory first
+# colcon build
+
+source install/setup.sh
+
 cd graspnet-baseline
 
 # pip install lark empy
@@ -55,7 +61,6 @@ fi
 echo "[*] Building graspnet_msgs package..."
 cd .
 source /opt/ros/humble/setup.bash
-source /root/src/install/setup.sh
 
 # Create output directory if it doesn't exist
 OUTPUT_DIR="../output/visualization"
@@ -100,10 +105,11 @@ EOF
 
 # export OPEN3D_HEADLESS=1
 
-# Run with timeout
+# Run without timeout to allow proper Ctrl-C handling
+# Note: timeout command interferes with signal handling, so it's removed
 # Add --no_collision to disable collision detection for debugging
 CUDA_VISIBLE_DEVICES=0 \
-    timeout 60 python -W ignore demo_ros2.py \
+    python -W ignore demo_ros2.py \
     --checkpoint_path ../weights/checkpoint-kn.tar \
     --no_collision
 
